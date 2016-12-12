@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.moovap.popmovies.BuildConfig;
 import com.moovap.popmovies.R;
 import com.moovap.popmovies.adapters.MoviesGridAdapter;
 import com.moovap.popmovies.client.TmdbClient;
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements Callback<MovieCol
     private void updateTopRated() {
         TmdbClient client = new TmdbClientProvider().getClient();
         Call<MovieCollection> call = client.getTopRatedMovies(
-                "b610d075e7372d9d659c688134e1741f",
+                BuildConfig.THE_MOVIE_DB_API_TOKEN,
                 getLanguage(),
                 1
         );
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements Callback<MovieCol
     private void updatePopular() {
         TmdbClient client = new TmdbClientProvider().getClient();
         Call<MovieCollection> call = client.getPopularMovies(
-                "b610d075e7372d9d659c688134e1741f",
+                BuildConfig.THE_MOVIE_DB_API_TOKEN,
                 getLanguage(),
                 1
         );
