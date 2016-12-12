@@ -1,34 +1,32 @@
 package com.moovap.popmovies.adapters;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.moovap.popmovies.R;
-import com.moovap.popmovies.models.Discover;
+import com.moovap.popmovies.models.MovieCollection;
 import com.moovap.popmovies.models.Movie;
+import com.moovap.popmovies.ui.DetailActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-/**
- * Created by jdanielnd on 12/12/16.
- */
-
 public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.ViewHolder> {
+
+    public final static String MOVIE = "MOVIE";
 
     private List<Movie> mDataset;
 
-    public MoviesGridAdapter(Discover discover) {
-        mDataset = discover.getResults();
+    public MoviesGridAdapter(MovieCollection movieCollection) {
+        mDataset = movieCollection.getResults();
     }
 
-    public void setDiscover(Discover discover) {
-        mDataset = discover.getResults();
+    public void setMovieCollection(MovieCollection movieCollection) {
+        mDataset = movieCollection.getResults();
         this.notifyDataSetChanged();
     }
 
@@ -43,10 +41,20 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
 
     @Override
     public void onBindViewHolder(MoviesGridAdapter.ViewHolder holder, int position) {
-        Movie movie = mDataset.get(position);
+        final Movie movie = mDataset.get(position);
+
         Picasso.with(holder.itemView.getContext())
                 .load(movie.getPosterUrl())
                 .into(holder.movieThumbnail);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), DetailActivity.class);
+                intent.putExtra(MOVIE, movie);
+                view.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -54,11 +62,11 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
         return mDataset.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView movieThumbnail;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             movieThumbnail = (ImageView) itemView.findViewById(R.id.movie_thumbnail);
         }

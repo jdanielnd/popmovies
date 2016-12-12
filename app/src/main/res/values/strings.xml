@@ -2,4 +2,8 @@
     <string name="app_name">PopMovies</string>
     <string name="movie_content_description">Movie Thumbnail</string>
     <string name="activity_main_error">Não foi possível carregar os filmes</string>
+    <string name="action_top_rated">Bem avaliados</string>
+    <string name="action_popular">Populares</string>
+    <string name="overview_title">Sinopse</string>
+    <string name="average_rating">Nota média: %1$.1f</string>
 </resources>

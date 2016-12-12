@@ -1,113 +1,127 @@
 package com.moovap.popmovies.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-public class Movie {
+public class Movie implements Parcelable {
 
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
-    @SerializedName("adult")
-    @Expose
-    private Boolean adult;
     @SerializedName("overview")
     @Expose
     private String overview;
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
-    @SerializedName("genre_ids")
-    @Expose
-    private List<Integer> genreIds = null;
-    @SerializedName("id")
-    @Expose
-    private Integer id;
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
-    @SerializedName("original_language")
-    @Expose
-    private String originalLanguage;
     @SerializedName("title")
     @Expose
     private String title;
     @SerializedName("backdrop_path")
     @Expose
     private String backdropPath;
-    @SerializedName("popularity")
-    @Expose
-    private Double popularity;
-    @SerializedName("vote_count")
-    @Expose
-    private Integer voteCount;
-    @SerializedName("video")
-    @Expose
-    private Boolean video;
     @SerializedName("vote_average")
     @Expose
-    private Double voteAverage;
+    private double voteAverage;
 
-    public String getPosterPath() {
+    private String getPosterPath() {
         return posterPath;
-    }
-
-    public Boolean getAdult() {
-        return adult;
     }
 
     public String getOverview() {
         return overview;
     }
 
-    public String getReleaseDate() {
+    private String getReleaseDate() {
         return releaseDate;
-    }
-
-    public List<Integer> getGenreIds() {
-        return genreIds;
-    }
-
-    public Integer getId() {
-        return id;
     }
 
     public String getOriginalTitle() {
         return originalTitle;
     }
 
-    public String getOriginalLanguage() {
-        return originalLanguage;
-    }
-
     public String getTitle() {
         return title;
     }
 
-    public String getBackdropPath() {
+    private String getBackdropPath() {
         return backdropPath;
     }
 
-    public Double getPopularity() {
-        return popularity;
-    }
-
-    public Integer getVoteCount() {
-        return voteCount;
-    }
-
-    public Boolean getVideo() {
-        return video;
-    }
-
-    public Double getVoteAverage() {
+    public double getVoteAverage() {
         return voteAverage;
     }
 
     public String getPosterUrl() {
-        return "http://image.tmdb.org/t/p/w185" + getPosterPath();
+        return "http://image.tmdb.org/t/p/w342" + getPosterPath();
     }
 
+    public String getBackdropUrl() {
+        return "http://image.tmdb.org/t/p/w780" + getBackdropPath();
+    }
+
+    public String getFormattedDate() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedReleaseDate = getReleaseDate();
+        try {
+            Date date = format.parse(getReleaseDate());
+
+            SimpleDateFormat finalFormat = new SimpleDateFormat("MMM YYYY");
+            formattedReleaseDate = finalFormat.format(date);
+            formattedReleaseDate= formattedReleaseDate.substring(0,1).toUpperCase() +
+                    formattedReleaseDate.substring(1);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return formattedReleaseDate;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.posterPath);
+        dest.writeString(this.overview);
+        dest.writeString(this.releaseDate);
+        dest.writeString(this.originalTitle);
+        dest.writeString(this.title);
+        dest.writeString(this.backdropPath);
+        dest.writeValue(this.voteAverage);
+    }
+
+    private Movie(Parcel in) {
+        this.posterPath = in.readString();
+        this.overview = in.readString();
+        this.releaseDate = in.readString();
+        this.originalTitle = in.readString();
+        this.title = in.readString();
+        this.backdropPath = in.readString();
+        this.voteAverage = (Double) in.readValue(Double.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel source) {
+            return new Movie(source);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }
